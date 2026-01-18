@@ -1,14 +1,35 @@
 import great_expectations as gx
+from pathlib import Path
 
-context = gx.get_context()
+def create_datasource():
+    context = gx.get_context()
 
-datasource = context.sources.add_pandas_filesystem(
-    name="ivf_datasource",
-    base_directory="data/raw"
-)
+    datasource_name = "ivf_filesystem_ds"
 
-print("Datasource created:", datasource.name)
+    if datasource_name in [ds["name"] for ds in context.list_datasources()]:
+        print("Datasource already exists")
+        return
 
-print("Assets found:")
-for asset in datasource.assets:
-    print("-", asset.name)
+    context.add_datasource(
+        name=datasource_name,
+        class_name="Datasource",
+        execution_engine={
+            "class_name": "PandasExecutionEngine"
+        },
+        data_connectors={
+            "default_inferred_data_connector_name": {
+                "class_name": "InferredAssetFilesystemDataConnector",
+                "base_directory": str(Path("data/raw").resolve()),
+                "default_regex": {
+                    "group_names": ["data_asset_name"],
+                    "pattern": r"(.*)\.csv"
+                }
+            }
+        }
+    )
+
+    print("Datasource created successfully")
+
+if __name__ == "__main__":
+    create_datasource()
+

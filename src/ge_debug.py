@@ -1,10 +1,24 @@
 import great_expectations as gx
 
-context = gx.get_context()
-datasource = context.get_datasource("ivf_datasource")
+def run_checkpoint():
+    context = gx.get_context()
 
-print("Datasource:", datasource.name)
+    checkpoint = context.add_or_update_checkpoint(
+        name="trigger_day_checkpoint",
+        validations=[
+            {
+                "batch_request": {
+                    "datasource_name": "ivf_filesystem_ds",
+                    "data_connector_name": "default_inferred_data_connector_name",
+                    "data_asset_name": "Trigger_Day_new_Dataset"
+                },
+                "expectation_suite_name": "trigger_day_expectations"
+            }
+        ]
+    )
 
-print("\nAvailable data assets:")
-for asset in datasource.assets:
-    print("-", asset.name)
+    result = checkpoint.run()
+    print("Validation success:", result["success"])
+
+if __name__ == "__main__":
+    run_checkpoint()

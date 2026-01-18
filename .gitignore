@@ -1,8 +1,14 @@
+# Virtual Environment
+venv/
 .venv/
+
+# Python cache
 __pycache__/
 *.pyc
-.env
-*.log
+
+# Great Expectations runtime files
 great_expectations/uncommitted/
-Thumbs.db
+
+# OS files
 .DS_Store
+Thumbs.db
