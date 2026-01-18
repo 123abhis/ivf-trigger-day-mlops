@@ -1,13 +1,12 @@
 import great_expectations as gx
-from pathlib import Path
 
 def create_datasource():
-    context = gx.get_context()
+    context = gx.get_context(context_root_dir="gx")
 
     datasource_name = "ivf_filesystem_ds"
 
-    if datasource_name in [ds["name"] for ds in context.list_datasources()]:
-        print("Datasource already exists")
+    if datasource_name in context.list_datasources():
+        print("ℹ️ Datasource already exists")
         return
 
     context.add_datasource(
@@ -17,19 +16,14 @@ def create_datasource():
             "class_name": "PandasExecutionEngine"
         },
         data_connectors={
-            "default_inferred_data_connector_name": {
-                "class_name": "InferredAssetFilesystemDataConnector",
-                "base_directory": str(Path("data/raw").resolve()),
-                "default_regex": {
-                    "group_names": ["data_asset_name"],
-                    "pattern": r"(.*)\.csv"
-                }
+            "default_runtime_data_connector_name": {
+                "class_name": "RuntimeDataConnector",
+                "batch_identifiers": ["default_identifier_name"]
             }
         }
     )
 
-    print("Datasource created successfully")
+    print("✅ Datasource created successfully")
 
 if __name__ == "__main__":
     create_datasource()
-

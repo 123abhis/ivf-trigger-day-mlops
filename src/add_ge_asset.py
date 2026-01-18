@@ -1,20 +1,29 @@
 import great_expectations as gx
+from great_expectations.core.batch import BatchRequest
 
-def add_asset():
+def add_raw_asset():
     context = gx.get_context()
-    datasource = context.sources.get("ivf_filesystem_ds")
 
-    asset_name = "trigger_day_csv"
+    datasource_name = "ivf_filesystem_ds"
 
-    if asset_name in datasource.assets:
-        print("Asset already exists")
-        return
-
-    datasource.add_csv_asset(
-        name=asset_name,
-        batching_regex=r"Trigger_Day_new_Dataset\.csv"
+    batch_request = BatchRequest(
+        datasource_name=datasource_name,
+        data_connector_name="default_runtime_data_connector_name",
+        data_asset_name="raw_trigger_day",
+        runtime_parameters= {
+            "path": "data/raw/Trigger_Day_new_Dataset.csv"
+        },
+        batch_identifiers= {
+            "default_identifier_name": "raw_batch"
+        },
     )
-    print("Asset added")
+
+    context.get_validator(
+        batch_request=batch_request,
+        expectation_suite_name="raw_trigger_day_suite"
+    )
+
+    print(" Raw data asset registered")
 
 if __name__ == "__main__":
-    add_asset()
+    add_raw_asset()

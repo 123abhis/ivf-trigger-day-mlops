@@ -7,7 +7,14 @@ __pycache__/
 *.pyc
 
 # Great Expectations runtime files
-great_expectations/uncommitted/
+gx/uncommitted/
+
+# Old GE folder (safety)
+great_expectations/
+
+# Data folders (VERY IMPORTANT)
+data/raw/
+data/processed/
 
 # OS files
 .DS_Store

@@ -1,39 +1,48 @@
 import great_expectations as gx
-from great_expectations.core.batch import BatchRequest
+from great_expectations.core.batch import RuntimeBatchRequest
 
-def create_expectation_suite():
-    context = gx.get_context()
-    suite_name = "trigger_day_expectations"
+def validate_raw_data():
+    context = gx.get_context(context_root_dir="gx")
 
-    if suite_name in context.list_expectation_suite_names():
-        print("Expectation suite already exists")
-        return
+    suite_name = "raw_trigger_day_suite"
+    datasource_name = "ivf_filesystem_ds"
 
-    suite = context.add_expectation_suite(suite_name)
+    if suite_name not in [s.expectation_suite_name for s in context.list_expectation_suites()]:
+        context.create_expectation_suite(suite_name)
+        print(f"✅ Created suite: {suite_name}")
 
-    batch_request = BatchRequest(
-        datasource_name="ivf_filesystem_ds",
-        data_connector_name="default_inferred_data_connector_name",
-        data_asset_name="Trigger_Day_new_Dataset"
+    batch_request = RuntimeBatchRequest(
+        datasource_name=datasource_name,
+        data_connector_name="default_runtime_data_connector_name",
+        data_asset_name="raw_trigger_day",
+        runtime_parameters={
+            "path": "data/raw/Trigger_Day_new_Dataset.csv"
+        },
+        batch_identifiers={
+            "default_identifier_name": "raw_batch"
+        }
     )
 
     validator = context.get_validator(
         batch_request=batch_request,
-        expectation_suite=suite
+        expectation_suite_name=suite_name
     )
 
-    # Core validations
-    validator.expect_table_row_count_to_be_between(100, 100000)
+    # ---------- Expectations ----------
     validator.expect_column_values_to_not_be_null("Patient_ID")
-    validator.expect_column_values_to_be_in_set("Trigger_Recommended", [0, 1])
+    validator.expect_column_values_to_be_between("Age", 18, 50)
+    validator.expect_column_values_to_be_between("BMI", 15, 40)
+    validator.expect_column_values_to_be_between("Day", 1, 20)
+    validator.expect_column_values_to_match_regex("Patient_ID", r"^[Pp]\d{4}$")
+    validator.expect_column_values_to_be_between("Trigger_Recommended (0/1)", 0, 1)
 
-    # Clinical sanity checks
-    validator.expect_column_values_to_be_between("Age", 18, 55)
-    validator.expect_column_values_to_be_between("AMH", 0.1, 20)
-    validator.expect_column_values_to_be_between("Avg_Follicle_Size_mm", 5, 30)
+    result = validator.validate()
 
     validator.save_expectation_suite()
-    print("Expectation suite created successfully")
+    context.build_data_docs()
+
+    print("📊 Validation success:", result["success"])
+    print("🌐 Data Docs generated")
 
 if __name__ == "__main__":
-    create_expectation_suite()
+    validate_raw_data()

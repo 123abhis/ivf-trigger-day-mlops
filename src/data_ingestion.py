@@ -28,6 +28,8 @@ def ingest_data():
     print(dff.head(5))
 
     print("Data ingestion completed")
+    
+    print(dff.columns)
 
 if __name__ == "__main__":
     ingest_data()
