@@ -6,7 +6,7 @@ def create_datasource():
     datasource_name = "ivf_filesystem_ds"
 
     if datasource_name in context.list_datasources():
-        print("ℹ️ Datasource already exists")
+        print("ℹ Datasource already exists")
         return
 
     context.add_datasource(
@@ -23,7 +23,7 @@ def create_datasource():
         }
     )
 
-    print("✅ Datasource created successfully")
+    print(" Datasource created successfully")
 
 if __name__ == "__main__":
     create_datasource()
