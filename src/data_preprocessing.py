@@ -6,12 +6,35 @@ from sklearn.pipeline import Pipeline
 
 
 def preprocess_data():
-    # 1. Load dataset
     df = pd.read_csv("data/raw/Trigger_Day_new_Dataset.csv")
 
-    # 2. Separate features and target
-    X = df.drop("Trigger_Recommended (0/1)", axis=1)
-    y = df["Trigger_Recommended (0/1)"]
+    df = df.rename(columns={
+        "Patient_ID": "patient_id",
+        "Age": "age",
+        "AMH (ng/mL)": "amh_ng_ml",
+        "Day": "cycle_day",
+        "Avg_Follicle_Size_mm": "avg_follicle_size_mm",
+        "Follicle_Count": "follicle_count",
+        "Estradiol_pg_mL": "estradiol_pg_ml",
+        "Progesterone_ng_mL": "progesterone_ng_ml",
+        "BMI": "bmi",
+        "Basal_LH_mIU_mL": "basal_lh_miu_ml",
+        "AFC": "afc",
+        "Visit_Date": "visit_date",
+        "Trigger_Recommended (0/1)": "trigger_recommended"
+    })
+
+    # Drop non-ML columns
+    df = df.drop(columns=["patient_id", "visit_date"])
+
+    # Save processed data
+    df.to_csv("data/processed/trigger_day_processed.csv", index=False)
+
+    print(" Data preprocessing completed")
+    
+    
+    X = df.drop("trigger_recommended", axis=1)
+    y = df["trigger_recommended"]
 
     # 3. Identify column types
     num_cols = X.select_dtypes(include=["int64", "float64"]).columns

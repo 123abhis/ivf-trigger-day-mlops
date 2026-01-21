@@ -3,6 +3,7 @@ from src.data_validation import  validate_raw_data
 from src.data_preprocessing import preprocess_data
 
 
+from src.store_to_clickhouse import store_to_clickhouse
 
 def main():
     print("Starting IVF Trigger Day ML Pipeline")
@@ -18,6 +19,12 @@ def main():
     preprocess_data()
 
     print(" Pipeline completed successfully!")
+
+
+    print("Storing processed data to ClickHouse...")
+    store_to_clickhouse()
+
+
 
 
 if __name__ == "__main__":
