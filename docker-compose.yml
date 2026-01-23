@@ -1,0 +1,61 @@
+version: "3.9"
+
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    container_name: clickhouse
+    environment:
+      
+      CLICKHOUSE_USER: default
+      CLICKHOUSE_PASSWORD: admin123
+      CLICKHOUSE_DB: ivf_mlops
+      
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+
+  ingestion:
+    container_name: ivf_ingestion
+    build:
+      context: .
+      dockerfile: docker/ingestion/Dockerfile
+    depends_on:
+      - clickhouse
+    volumes:
+      - ./data:/data
+    restart: on-failure
+
+  training:
+    container_name: ivf_training
+    build:
+      context: .
+      dockerfile: docker/training/Dockerfile
+    depends_on:
+      - clickhouse
+      - ingestion
+    volumes:
+      - ./data:/data
+      - ./models:/models
+    restart: on-failure
+
+  mlflow:
+
+    image: ghcr.io/mlflow/mlflow:latest
+    container_name: mlflow
+    environment:
+      - MLFLOW_SERVER_ALLOWED_HOSTS=*
+    command: >
+      mlflow server
+      --backend-store-uri sqlite:///mlflow.db
+      --default-artifact-root /mlflow/artifacts
+      --host 0.0.0.0
+      --port 5000
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./mlflow:/mlflow
+
+volumes:
+  clickhouse_data:

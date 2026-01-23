@@ -2,49 +2,45 @@ import pandas as pd
 import clickhouse_connect
 from datetime import datetime
 
-def store_to_clickhouse():
-    df = pd.read_csv("data/processed/trigger_day_processed.csv")
+client = clickhouse_connect.get_client(
+    host="localhost",
+    port=8123,
+    username="default",
+    password="admin123",
+    database="ivf_mlops"
+)
 
-    # Safety check
-    print("CSV Columns:", list(df.columns))
+df = pd.read_csv("data/processed/trigger_day_processed.csv")
 
-    # Add ingestion time
-    df["ingestion_time"] = datetime.now()
+# Safety check
+print("CSV Columns:", list(df.columns))
 
-    client = clickhouse_connect.get_client(
-        host="127.0.0.1",
-        port=8123,
-        username="default",
-        password="admin123",   # 🔑 REQUIRED
-        database="ivf_mlops"
-    )
+# Add ingestion timestamp
+df["ingestion_time"] = datetime.now()
 
+client.command("""
+CREATE TABLE IF NOT EXISTS trigger_day_features (
+    age Float32,
+    amh_ng_ml Float32,
+    cycle_day Int32,
+    avg_follicle_size_mm Float32,
+    follicle_count Int32,
+    estradiol_pg_ml Float32,
+    progesterone_ng_ml Float32,
+    bmi Float32,
+    basal_lh_miu_ml Float32,
+    afc Int32,
+    cluster_id Int32,
+    trigger_recommended UInt8,
+    ingestion_time DateTime
+) ENGINE = MergeTree()
+ORDER BY ingestion_time
+""")
 
+client.insert(
+    table="trigger_day_features",
+    data=df.values.tolist(),
+    column_names=df.columns.tolist()
+)
 
-    columns = [
-        "age",
-        "amh_ng_ml",
-        "cycle_day",
-        "avg_follicle_size_mm",
-        "follicle_count",
-        "estradiol_pg_ml",
-        "progesterone_ng_ml",
-        "bmi",
-        "basal_lh_miu_ml",
-        "afc",
-        "trigger_recommended",
-        "ingestion_time"
-    ]
-
-    df = df[columns]   # schema lock 🔒
-
-    client.insert(
-        table="trigger_day_features",
-        data=df.values.tolist(),
-        column_names=columns
-    )
-
-    print(" Data stored in ClickHouse successfully")
-
-if __name__ == "__main__":
-    store_to_clickhouse()
+print("✅ Processed + clustered data stored in ClickHouse")
