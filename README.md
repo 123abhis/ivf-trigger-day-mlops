@@ -153,6 +153,64 @@ gx/uncommitted/data_docs/local_site/index.html
 * Designed following **data governance best practices**
 
 
+Data Ingestion
+
+Patient and treatment data ingested into ClickHouse
+
+Structured and optimized for analytical queries
+
+Feature Engineering & Storage
+
+Feature store table: trigger_day_features
+
+Clustering applied and stored as a feature (cluster_id)
+
+Model Training
+
+Dockerized training pipeline
+
+Models trained:
+
+Logistic Regression
+
+Random Forest
+
+Gradient Boosting
+
+XGBoost
+
+Model Evaluation & Selection
+
+Metrics logged to MLflow
+
+Gradient Boosting and XGBoost showed misleading perfect metrics due to data characteristics
+
+Random Forest selected as the final model based on stable and realistic performance
+
+Experiment Tracking
+
+MLflow used for:
+
+Metric logging
+
+Parameter tracking
+
+Model artifacts
+
+Run comparison
+
+End-to-End MLOps Setup
+
+Fully Dockerized pipeline
+
+Reproducible training and evaluation workflow
+
+🧠 Final Model
+
+Algorithm: Random Forest Classifier
+
+Reason: Robust to non-linearity, handles mixed features well, and provides stable evaluation metrics
+
 ##  Future Enhancements
 
 *  MLflow experiment tracking
@@ -187,7 +245,28 @@ python main.py
 
 ##  Status
 
-# Data ingestion complete
-# Data validation with Great Expectations
-# Data Docs generated
-# GitHub-ready MLOps project
+## Data ingestion complete
+## Data validation with Great Expectations
+## Data Docs generated
+## GitHub-ready MLOps project
+## Data ingestion → ClickHouse 
+## Feature store table (trigger_day_features)
+## Clustering added as a feature (cluster_id) 
+## Training pipeline in Docker 
+## MLflow tracking working 
+## Multiple models trained 
+## Model comparison done 
+## Random Forest selected as final model 
+## Metrics logged correctly 
+## Dockerized end-to-end pipeline
+
+
+
+
+
+
+
+
+
+
+
