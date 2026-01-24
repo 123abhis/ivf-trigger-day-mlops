@@ -44,4 +44,4 @@ ORDER BY age
 
 client.insert_df("trigger_day_features", df)
 
-print("✅ Data successfully inserted into ClickHouse")
+print(" Data successfully inserted into ClickHouse")

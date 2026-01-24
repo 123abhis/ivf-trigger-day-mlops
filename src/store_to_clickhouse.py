@@ -43,4 +43,4 @@ client.insert(
     column_names=df.columns.tolist()
 )
 
-print("✅ Processed + clustered data stored in ClickHouse")
+print(" Processed + clustered data stored in ClickHouse")
