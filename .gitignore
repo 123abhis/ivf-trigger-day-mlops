@@ -21,4 +21,7 @@ data/processed/
 Thumbs.db
 
 #  mlfow files
+
 mlruns/
+mlflow/
+mlflow_artifacts/
