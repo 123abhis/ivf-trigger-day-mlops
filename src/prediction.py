@@ -108,10 +108,17 @@ def wait_for_mlflow():
 
 wait_for_mlflow()
 
-# 🔥 Load model by alias
+# Load challenger model by alias
+# model = mlflow.sklearn.load_model(
+#     model_uri="models:/IVF_Trigger_Day_RF@challenger"
+# )
+
+# Load production model by alias
 model = mlflow.sklearn.load_model(
-    model_uri="models:/IVF_Trigger_Day_RF@challenger"
+    model_uri="models:/IVF_Trigger_Day_RF@production"
 )
+
+
 
 # ---------------- ClickHouse ----------------
 def get_clickhouse_client():
@@ -166,7 +173,7 @@ probabilities = model.predict_proba(df)[:, 1]
 result_df = pd.DataFrame({
     "prediction": predictions,
     "probability": probabilities,
-    "model_alias": "challenger",
+    "model_alias": "production",
     "prediction_time": datetime.now()
 })
 
@@ -178,7 +185,7 @@ client.insert_df(
 
 # Log batch prediction run
 with mlflow.start_run(run_name="rf_batch_prediction"):
-    mlflow.log_param("model_alias", "challenger")
+    mlflow.log_param("model_alias", "production")
     mlflow.log_metric("batch_size", len(df))
     mlflow.log_metric("positive_rate", predictions.mean())
 
