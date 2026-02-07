@@ -1,7 +1,7 @@
 pandas
 scikit-learn
 clickhouse-connect
-mlflow
+mlflow==2.5.0
 joblib
 xgboost==1.7.6
 seaborn==0.12.2
