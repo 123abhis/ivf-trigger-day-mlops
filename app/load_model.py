@@ -8,3 +8,4 @@ mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
 MODEL_URI = "models:/IVF_Trigger_Day_RF@production"
 
 model = mlflow.sklearn.load_model(MODEL_URI)
+
