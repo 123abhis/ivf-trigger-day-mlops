@@ -28,12 +28,6 @@ mlflow_artifacts/
 
 # used files 
 used_code_test/
-
-tests/
-
 notebooks/
-
-.github/
-
 logs/
 
