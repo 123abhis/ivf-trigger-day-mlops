@@ -25,8 +25,9 @@ jobs:
           pip install -r requirements_api.txt
 
       - name: Run API tests
-        run: |
-          pytest tests/
+        env:
+          PYTHONPATH: .
+        run: pytest tests/
 
       - name: Build API Docker image
         run: |
