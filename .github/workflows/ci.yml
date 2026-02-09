@@ -43,14 +43,13 @@
 #           sleep 10
 #           curl --fail http://localhost:8000/health
 
-
 name: CI Pipeline
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   test:
@@ -73,6 +72,7 @@ jobs:
 
       - name: Run tests
         env:
+          PYTHONPATH: .
           MLFLOW_TRACKING_URI: ""
         run: |
           pytest tests/
