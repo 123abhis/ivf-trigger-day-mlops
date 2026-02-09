@@ -30,4 +30,6 @@ mlflow_artifacts/
 used_code_test/
 notebooks/
 logs/
+*.log
+*.csv
 
