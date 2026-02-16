@@ -59,7 +59,9 @@ def test_predict(mock_model):
         "progesterone_ng_ml": 0.9,
         "bmi": 22.4,
         "basal_lh_miu_ml": 6.1,
-        "afc": 14
+        "afc": 14,
+        "cluster_id": 2
+
     }
 
     response = client.post("/predict", json=payload)
