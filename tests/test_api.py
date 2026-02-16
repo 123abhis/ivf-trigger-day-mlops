@@ -31,6 +31,7 @@
 
 
 
+from urllib import response
 from fastapi.testclient import TestClient
 from app.api import app
 from unittest.mock import patch
@@ -63,3 +64,5 @@ def test_predict(mock_model):
 
     response = client.post("/predict", json=payload)
     assert response.status_code == 200
+
+    print(response.json())
