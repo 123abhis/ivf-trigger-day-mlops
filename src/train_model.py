@@ -33,10 +33,10 @@ def get_clickhouse_client():
             client.query("SELECT 1")
             return client
         except Exception:
-            print(f"⏳ Waiting for ClickHouse... ({i+1}/10)")
+            print(f" Waiting for ClickHouse... ({i+1}/10)")
             time.sleep(5)
 
-    raise RuntimeError("❌ ClickHouse not available")
+    raise RuntimeError(" ClickHouse not available")
 
 
 def wait_for_table(client, table_name, retries=10, delay=5):
@@ -47,15 +47,15 @@ def wait_for_table(client, table_name, retries=10, delay=5):
             ).result_rows[0][0]
 
             if exists == 1:
-                print(f"✅ Table {table_name} is ready")
+                print(f" Table {table_name} is ready")
                 return
         except Exception:
             pass
 
-        print(f"⏳ Waiting for table {table_name}... ({i+1}/{retries})")
+        print(f" Waiting for table {table_name}... ({i+1}/{retries})")
         time.sleep(delay)
 
-    raise RuntimeError(f"❌ Table {table_name} not found")
+    raise RuntimeError(f" Table {table_name} not found")
 
 
 # --------------------------------------------------
@@ -139,7 +139,7 @@ def train_model():
         # Signature
         signature = infer_signature(X_test, y_pred)
 
-        # ✅ CORRECT log_model
+        #  CORRECT log_model
         mlflow.sklearn.log_model(
             sk_model=rf,
             artifact_path="model",
@@ -148,7 +148,7 @@ def train_model():
             input_example=X_test.iloc[:5]
         )
 
-        print("✅ Model logged & registered")
+        print(" Model logged & registered")
 
         # ---------------- Alias handling ----------------
         mlflow_client = MlflowClient()
@@ -164,7 +164,7 @@ def train_model():
             version=model_version
         )
 
-        # 🔥 Production alias (IMPORTANT)
+        #  Production alias (IMPORTANT)
         mlflow_client.set_registered_model_alias(
             name="IVF_Trigger_Day_RF",
             alias="production",

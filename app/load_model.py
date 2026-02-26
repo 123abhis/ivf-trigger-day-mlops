@@ -29,3 +29,4 @@ def get_model():
     if _model is None:
         _model = mlflow.sklearn.load_model(MODEL_URI)
     return _model
+

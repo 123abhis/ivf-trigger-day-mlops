@@ -45,9 +45,11 @@ def test_health(mock_model):
     assert response.status_code == 200
     assert response.json()["status"] == "ok"
 
-@patch("app.load_model.get_model")
-def test_predict(mock_model):
-    mock_model.return_value.predict.return_value = np.array([1])
+@patch("app.api.get_model")
+def test_predict(mock_get_model):
+    mock_model = mock_get_model.return_value
+    mock_model.predict.return_value = np.array([1])
+    mock_model.predict_proba.return_value = np.array([[0.1, 0.9]])
 
     payload = {
         "age": 30,
@@ -61,7 +63,6 @@ def test_predict(mock_model):
         "basal_lh_miu_ml": 6.1,
         "afc": 14,
         "cluster_id": 2
-
     }
 
     response = client.post("/predict", json=payload)

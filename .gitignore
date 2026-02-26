@@ -33,3 +33,8 @@ logs/
 *.log
 *.csv
 
+
+
+# airflow files
+airflow/
+docker-compose.airflow.yml/
